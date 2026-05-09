@@ -1,16 +1,122 @@
-﻿# AppleMusicWindowsRpc
+﻿# AppleMusicWindowsRpc for Equicord
 
-UserPlugin para Equicord que detecta la canción actual de Apple Music en Windows usando SMTC (GlobalSystemMediaTransportControlsSessionManager) y la publica como actividad local en Discord.
+Apple Music Rich Presence for **Equicord on Windows**.
 
-## Instalación
+This plugin shows what you're listening to in Apple Music directly in Discord, including:
+- Track title
+- Artist and album
+- Playback timestamps/progress
+- Album artwork
+- Proper UTF-8 support (accents, special characters)
 
-1. Copia esta carpeta a `src/userplugins/appleMusicWindowsRpc` dentro de tu repo de Equicord.
-2. Ejecuta `pnpm build` en la raíz de Equicord.
-3. Reinicia Discord.
-4. Activa `AppleMusicWindowsRpc` en Plugins.
+## Features
 
-## Notas
+- Real-time Apple Music/iTunes detection via Windows SMTC media sessions
+- Discord local Rich Presence updates
+- Automatic album cover fetching
+- Customizable text templates (`{name}`, `{artist}`, `{album}`)
+- Configurable refresh interval
 
-- Requiere Windows y la app de Apple Music/iTunes emitiendo sesión multimedia.
-- Si Apple Music está pausado, el plugin limpia la actividad.
-- Puedes cambiar formato y refresco desde los ajustes del plugin.
+## Requirements
+
+- Windows 10/11
+- Apple Music for Windows (or iTunes)
+- Equicord **built from source** (user plugins require a build)
+- Node.js
+- `pnpm`
+
+## Installation
+
+### 1) Clone Equicord (if you don't already have it)
+
+```powershell
+git clone https://github.com/Equicord/Equicord.git
+cd Equicord
+```
+
+### 2) Copy this plugin into `src/userplugins/`
+
+Final structure:
+
+```text
+src/userplugins/appleMusicWindowsRpc/
+  index.ts
+  native.ts
+  README.md
+```
+
+### 3) Install dependencies and build
+
+```powershell
+pnpm install
+pnpm build
+```
+
+### 4) Inject and restart Discord
+
+```powershell
+pnpm inject
+```
+
+Fully close Discord (including system tray), then open it again.
+
+### 5) Enable the plugin
+
+`Settings -> Plugins -> AppleMusicWindowsRpc`
+
+## Configuration
+
+Plugin settings let you customize:
+
+- **Activity Type**: `Playing` or `Listening`
+- **Refresh Interval**
+- **Details String** (example: `{name}`)
+- **State String** (example: `{artist} - {album}`)
+- **Timestamps** on/off
+
+## Screenshots
+
+Add your screenshots here:
+
+```md
+![Preview 1](./assets/preview-1.png)
+![Preview 2](./assets/preview-2.png)
+```
+
+## Troubleshooting
+
+### Plugin does not appear
+
+- Confirm folder path: `src/userplugins/appleMusicWindowsRpc/`
+- Confirm entry file name is exactly `index.ts`
+- Run `pnpm build` again
+- Fully restart Discord
+
+### Song is not detected
+
+- Make sure Apple Music is actually playing (not paused)
+- Ensure you're running the same Equicord build where this plugin was added
+- Run `pnpm inject` again
+
+### Broken accents / special characters
+
+This plugin already uses robust UTF-8 transport for PowerShell -> plugin communication.
+If text still looks wrong, rebuild and reinject:
+
+```powershell
+pnpm build
+pnpm inject
+```
+
+## Contributing
+
+PRs are welcome: artwork improvements, performance tweaks, new formatting options, etc.
+
+## Credits
+
+- Built on top of the Equicord/Vencord plugin architecture
+- Windows SMTC + RPC implementation by @expot
+
+## License
+
+MIT (recommended for maximum adoption)

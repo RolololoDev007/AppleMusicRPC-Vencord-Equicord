@@ -1,7 +1,7 @@
 ﻿import { definePluginSettings } from "@api/Settings";
-import { IS_WIN } from "@utils/constants";
+import { IS_WINDOWS } from "@utils/constants";
 import definePlugin, { OptionType, PluginNative } from "@utils/types";
-import { FluxDispatcher } from "@webpack/common";
+import { ApplicationAssetUtils, FluxDispatcher } from "@webpack/common";
 
 const Native = VencordNative.pluginHelpers.AppleMusicWindowsRpc as PluginNative<typeof import("./native")>;
 
@@ -14,6 +14,10 @@ interface Activity {
         start?: number;
         end?: number;
     };
+    assets?: {
+        large_image?: string;
+        large_text?: string;
+    };
     type: number;
     flags: number;
 }
@@ -22,6 +26,7 @@ interface TrackData {
     name: string;
     artist?: string;
     album?: string;
+    albumArtwork?: string;
     playerPosition?: number;
     duration?: number;
 }
@@ -87,7 +92,7 @@ function format(template: string, track: TrackData): string {
         .trim();
 }
 
-function makeActivity(track: TrackData): Activity {
+async function makeActivity(track: TrackData): Promise<Activity> {
     const details = format(settings.store.detailsString, track) || track.name;
     const state = format(settings.store.stateString, track) || undefined;
 
@@ -99,6 +104,10 @@ function makeActivity(track: TrackData): Activity {
         Number.isFinite(track.duration) &&
         track.duration > 0;
 
+    const largeImage = track.albumArtwork
+        ? (await ApplicationAssetUtils.fetchAssetIds(applicationId, [track.albumArtwork]))[0]
+        : undefined;
+
     return {
         application_id: applicationId,
         name: "Apple Music",
@@ -106,9 +115,15 @@ function makeActivity(track: TrackData): Activity {
         state,
         timestamps: hasTiming
             ? {
-                  start: Date.now() - track.playerPosition * 1000,
-                  end: Date.now() - track.playerPosition * 1000 + track.duration * 1000
-              }
+                start: Date.now() - track.playerPosition * 1000,
+                end: Date.now() - track.playerPosition * 1000 + track.duration * 1000
+            }
+            : undefined,
+        assets: largeImage
+            ? {
+                large_image: largeImage,
+                large_text: track.album ?? track.name
+            }
             : undefined,
         type: settings.store.activityType,
         flags: ActivityFlag.Instance
@@ -119,7 +134,7 @@ export default definePlugin({
     name: "AppleMusicWindowsRpc",
     description: "Rich Presence de Apple Music para Windows.",
     authors: [{ name: "expot", id: 0n }],
-    hidden: !IS_WIN,
+    hidden: !IS_WINDOWS,
     settings,
 
     start() {
@@ -135,7 +150,7 @@ export default definePlugin({
     async updatePresence() {
         try {
             const track = await Native.fetchTrackData();
-            setActivity(track ? makeActivity(track) : null);
+            setActivity(track ? await makeActivity(track) : null);
         } catch {
             setActivity(null);
         }

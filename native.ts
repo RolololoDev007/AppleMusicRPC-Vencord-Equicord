@@ -5,6 +5,7 @@ export interface TrackData {
     name: string;
     artist?: string;
     album?: string;
+    albumArtwork?: string;
     playerPosition?: number;
     duration?: number;
 }
@@ -31,11 +32,29 @@ async function readSessions(): Promise<RawSession[]> {
     const script = `
 Add-Type -AssemblyName System.Runtime.WindowsRuntime | Out-Null
 $null = [Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager, Windows.Media.Control, ContentType=WindowsRuntime]
-$mgr = [Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager]::RequestAsync().GetAwaiter().GetResult()
+$asTaskGeneric = [System.WindowsRuntimeSystemExtensions].GetMethods() | Where-Object {
+    $_.Name -eq "AsTask" -and $_.IsGenericMethodDefinition -and $_.GetParameters().Count -eq 1
+} | Select-Object -First 1
+
+if (-not $asTaskGeneric) {
+  [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes("[]")) | Write-Output
+  exit
+}
+
+$mgrOp = [Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager]::RequestAsync()
+$mgrTask = $asTaskGeneric.MakeGenericMethod([Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager]).Invoke($null, @($mgrOp))
+$mgr = $mgrTask.Result
+
+if (-not $mgr) {
+  [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes("[]")) | Write-Output
+  exit
+}
 
 $sessions = foreach ($s in $mgr.GetSessions()) {
   try {
-    $props = $s.TryGetMediaPropertiesAsync().GetAwaiter().GetResult()
+    $mediaOp = $s.TryGetMediaPropertiesAsync()
+    $propsTask = $asTaskGeneric.MakeGenericMethod([Windows.Media.Control.GlobalSystemMediaTransportControlsSessionMediaProperties]).Invoke($null, @($mediaOp))
+    $props = $propsTask.Result
     $timeline = $s.GetTimelineProperties()
     $playback = $s.GetPlaybackInfo()
 
@@ -51,31 +70,59 @@ $sessions = foreach ($s in $mgr.GetSessions()) {
   } catch {}
 }
 
-$sessions | ConvertTo-Json -Compress
+$json = $sessions | ConvertTo-Json -Compress
+[Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($json))
 `;
 
     const { stdout } = await exec("powershell.exe", ["-NoProfile", "-Command", script], {
         windowsHide: true,
-        maxBuffer: 1024 * 1024
+        maxBuffer: 1024 * 1024,
+        encoding: "utf8"
     });
 
-    const text = stdout.trim();
+    const base64 = stdout.trim();
+    if (!base64) return [];
+
+    const text = Buffer.from(base64, "base64").toString("utf8");
     if (!text) return [];
 
     const parsed = JSON.parse(text);
     return Array.isArray(parsed) ? parsed : [parsed];
 }
 
-function normalizeTrack(session: RawSession): TrackData | null {
+async function fetchAlbumArtwork(track: { name: string; artist?: string; album?: string; }): Promise<string | undefined> {
+    try {
+        const params = new URLSearchParams({
+            term: `${track.name} ${track.artist ?? ""} ${track.album ?? ""}`.trim(),
+            media: "music",
+            entity: "song",
+            limit: "1"
+        });
+
+        const res = await fetch(`https://itunes.apple.com/search?${params.toString()}`);
+        if (!res.ok) return;
+
+        const data = await res.json() as { results?: Array<{ artworkUrl100?: string; }> };
+        const art = data.results?.[0]?.artworkUrl100;
+        return art ? art.replace("100x100", "512x512") : undefined;
+    } catch {
+        return;
+    }
+}
+
+async function normalizeTrack(session: RawSession): Promise<TrackData | null> {
     if (!session.title || session.playbackStatus?.toLowerCase() !== "playing") return null;
 
-    return {
+    const base: TrackData = {
         name: session.title,
         artist: session.artist,
         album: session.album,
         playerPosition: typeof session.positionSeconds === "number" ? session.positionSeconds : undefined,
         duration: typeof session.durationSeconds === "number" ? session.durationSeconds : undefined
     };
+
+    base.albumArtwork = await fetchAlbumArtwork(base);
+    return base;
 }
 
 export async function fetchTrackData(): Promise<TrackData | null> {
@@ -84,7 +131,7 @@ export async function fetchTrackData(): Promise<TrackData | null> {
         const target = sessions.find(s => APP_ID_PATTERNS.some(pattern => pattern.test(s.appId ?? "")));
         if (!target) return null;
 
-        return normalizeTrack(target);
+        return await normalizeTrack(target);
     } catch {
         return null;
     }
