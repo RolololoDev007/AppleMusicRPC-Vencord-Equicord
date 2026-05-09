@@ -1,119 +1,71 @@
-﻿# AppleMusicWindowsRpc for Equicord
+# AppleMusic Presence Plugin
+<p align="center"> 
+  <b>Turn your Apple Music session into a beautiful Discord Rich Presence.</b> 
+  <br /> Real-time track detection, album art, clean timestamps, and full UTF-8 metadata support. 
+</p> 
+<p align="center"> 
+    <img alt="Platform" src="https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20macOS-0078D4?style=for-the-badge" /> 
+    <img alt="Client" src="https://img.shields.io/badge/Client-Equicord%20%7C%20Vencord-5865F2?style=for-the-badge" /> 
+    <img alt="Music" src="https://img.shields.io/badge/Source-Apple%20Music-fa233b?style=for-the-badge" /> 
+    <img alt="Status" src="https://img.shields.io/badge/Status-Working-success?style=for-the-badge" /> 
+</p>
 
-Apple Music Rich Presence for **Equicord on Windows**.
+## Why this plugin?
 
-This plugin shows what you're listening to in Apple Music directly in Discord, including:
-- Track title
-- Artist and album
-- Playback timestamps/progress
-- Album artwork
-- Proper UTF-8 support (accents, special characters)
+Most music RPC setups are either fragile, outdated, or break with non-English characters.
 
-## Features
+**AppleMusic Presence Plugin** was built to feel reliable in real-world usage:
+- Real-time detection from your desktop music session
+- Continuous Discord Rich Presence updates
+- Correct UTF-8 metadata handling (`á`, `é`, `ñ`, `ø`, etc.)
+- Album artwork support for a premium profile card
 
-- Real-time Apple Music/iTunes detection via Windows SMTC media sessions
-- Discord local Rich Presence updates
-- Automatic album cover fetching
-- Customizable text templates (`{name}`, `{artist}`, `{album}`)
+---
+
+## What you get
+
+- Real-time **Now Playing** from Apple Music
+- Rich Presence with song title, artist, album, and progress
+- Album cover image in activity assets
+- Custom text templates: `{name}`, `{artist}`, `{album}`
 - Configurable refresh interval
+
+---
 
 ## Requirements
 
-- Windows 10/11
-- Apple Music for Windows (or iTunes)
-- Equicord **built from source** (user plugins require a build)
-- Node.js
-- `pnpm`
+- Windows / Linux / macOS
+- Apple Music desktop app
+- Equicord or Vencord
+- Node.js + pnpm (if you build from source)
+
+---
 
 ## Installation
 
-### 1) Clone Equicord (if you don't already have it)
+1. Add this plugin folder to your client plugin source tree (commonly `src/userplugins/...`).
+2. Build your client/plugin setup.
+3. Inject/apply the build.
+4. Restart Discord completely.
+5. Enable the plugin in settings.
 
-```powershell
-git clone https://github.com/Equicord/Equicord.git
-cd Equicord
-```
-
-### 2) Copy this plugin into `src/userplugins/`
-
-Final structure:
-
-```text
-src/userplugins/appleMusicWindowsRpc/
-  index.ts
-  native.ts
-  README.md
-```
-
-### 3) Install dependencies and build
-
-```powershell
-pnpm install
-pnpm build
-```
-
-### 4) Inject and restart Discord
-
-```powershell
-pnpm inject
-```
-
-Fully close Discord (including system tray), then open it again.
-
-### 5) Enable the plugin
-
-`Settings -> Plugins -> AppleMusicWindowsRpc`
-
-## Configuration
-
-Plugin settings let you customize:
-
-- **Activity Type**: `Playing` or `Listening`
-- **Refresh Interval**
-- **Details String** (example: `{name}`)
-- **State String** (example: `{artist} - {album}`)
-- **Timestamps** on/off
+---
 
 ## Screenshots
 
-Add your screenshots here:
+<img width="350" height="570" alt="20260509-0905-14 3674992" src="https://github.com/user-attachments/assets/53a3b28c-77a7-40e0-b004-93c7d7c1f4be" />
 
-<img width="351" height="527" alt="Image" src="https://github.com/user-attachments/assets/e88581b0-479a-4cce-8dd2-c5b3af620ff2" />
 
-## Troubleshooting
+---
 
-### Plugin does not appear
+## Support me on Ko-fi
 
-- Confirm folder path: `src/userplugins/appleMusicWindowsRpc/`
-- Confirm entry file name is exactly `index.ts`
-- Run `pnpm build` again
-- Fully restart Discord
+If this plugin improved your Discord profile and you want to support future plugins:
 
-### Song is not detected
+[![Support me on Ko-fi](https://img.shields.io/badge/Support%20me%20on-Ko--fi-ff5f5f?style=for-the-badge&logo=kofi&logoColor=white)](https://ko-fi.com/rolololodev007)
 
-- Make sure Apple Music is actually playing (not paused)
-- Ensure you're running the same Equicord build where this plugin was added
-- Run `pnpm inject` again
-
-### Broken accents / special characters
-
-This plugin already uses robust UTF-8 transport for PowerShell -> plugin communication.
-If text still looks wrong, rebuild and reinject:
-
-```powershell
-pnpm build
-pnpm inject
-```
-
-## Contributing
-
-PRs are welcome: artwork improvements, performance tweaks, new formatting options, etc.
-
-## Credits
-
-- Built on top of the Equicord/Vencord plugin architecture
-- Windows SMTC + RPC implementation by @expot
+---
 
 ## License
 
-MIT (recommended for maximum adoption)
+MIT
