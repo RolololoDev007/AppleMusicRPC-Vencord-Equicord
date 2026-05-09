@@ -79,8 +79,8 @@ Plugin settings let you customize:
 Add your screenshots here:
 
 ```md
-![Preview 1](./assets/preview-1.png)
-![Preview 2](./assets/preview-2.png)
+<img width="351" height="527" alt="image" src="https://github.com/user-attachments/assets/9afc045e-a254-4349-9265-b6cc3fe87c70" />
+
 ```
 
 ## Troubleshooting
