@@ -56,12 +56,10 @@ Most music RPC setups are either fragile, outdated, or break with non-English ch
 
 ---
 
-## Screenshots
+## Demo
 
-```md
-![Profile Preview](./assets/profile-preview.png)
-![Plugin Settings](./assets/settings-preview.png)
-```
+<img width="350" height="570" alt="20260509-0948-30 9026789" src="https://github.com/user-attachments/assets/27822837-2a45-4112-8b64-077f9d0a6701" />
+
 
 ---
 
