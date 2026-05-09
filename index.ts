@@ -1,9 +1,9 @@
 ﻿import { definePluginSettings } from "@api/Settings";
-import { IS_WINDOWS } from "@utils/constants";
+import { EquicordDevs, IS_WINDOWS } from "@utils/constants";
 import definePlugin, { OptionType, PluginNative } from "@utils/types";
 import { ApplicationAssetUtils, FluxDispatcher } from "@webpack/common";
 
-const Native = VencordNative.pluginHelpers.AppleMusicWindowsRpc as PluginNative<typeof import("./native")>;
+const Native = VencordNative.pluginHelpers.AppleMusicRpc as PluginNative<typeof import("./native")>;
 
 interface Activity {
     application_id: string;
@@ -79,7 +79,7 @@ function setActivity(activity: Activity | null) {
     FluxDispatcher.dispatch({
         type: "LOCAL_ACTIVITY_UPDATE",
         activity,
-        socketId: "AppleMusicWindowsRpc"
+        socketId: "AppleMusicRpc"
     });
 }
 
@@ -131,9 +131,9 @@ async function makeActivity(track: TrackData): Promise<Activity> {
 }
 
 export default definePlugin({
-    name: "AppleMusicWindowsRpc",
-    description: "Rich Presence de Apple Music para Windows.",
-    authors: [{ name: "expot", id: 0n }],
+    name: "AppleMusicRpc",
+    description: "Apple Music rich presence for Windows.",
+    authors: [EquicordDevs.rolololodev007],
     hidden: !IS_WINDOWS,
     settings,
 
@@ -156,3 +156,5 @@ export default definePlugin({
         }
     }
 });
+
+

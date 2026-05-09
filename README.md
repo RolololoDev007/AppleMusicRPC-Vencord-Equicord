@@ -1,14 +1,19 @@
-# AppleMusic Presence Plugin
-<p align="center"> 
-  <b>Turn your Apple Music session into a beautiful Discord Rich Presence.</b> 
-  <br /> Real-time track detection, album art, clean timestamps, and full UTF-8 metadata support. 
-</p> 
-<p align="center"> 
-    <img alt="Platform" src="https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20macOS-0078D4?style=for-the-badge" /> 
-    <img alt="Client" src="https://img.shields.io/badge/Client-Equicord%20%7C%20Vencord-5865F2?style=for-the-badge" /> 
-    <img alt="Music" src="https://img.shields.io/badge/Source-Apple%20Music-fa233b?style=for-the-badge" /> 
-    <img alt="Status" src="https://img.shields.io/badge/Status-Working-success?style=for-the-badge" /> 
+﻿# AppleMusic Presence Plugin
+
+<p align="center">
+  <b>Turn your Apple Music session into a beautiful Discord Rich Presence.</b>
+  <br />
+  Real-time track detection, album art, clean timestamps, and full UTF-8 metadata support.
 </p>
+
+<p align="center">
+  <img alt="Platform" src="https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20macOS-0078D4?style=for-the-badge" />
+  <img alt="Client" src="https://img.shields.io/badge/Client-Equicord%20%7C%20Vencord-5865F2?style=for-the-badge" />
+  <img alt="Music" src="https://img.shields.io/badge/Source-Apple%20Music-fa233b?style=for-the-badge" />
+  <img alt="Status" src="https://img.shields.io/badge/Status-Working-success?style=for-the-badge" />
+</p>
+
+---
 
 ## Why this plugin?
 
@@ -53,19 +58,26 @@ Most music RPC setups are either fragile, outdated, or break with non-English ch
 
 ## Screenshots
 
-<img width="350" height="570" alt="20260509-0905-14 3674992" src="https://github.com/user-attachments/assets/53a3b28c-77a7-40e0-b004-93c7d7c1f4be" />
-
+```md
+![Profile Preview](./assets/profile-preview.png)
+![Plugin Settings](./assets/settings-preview.png)
+```
 
 ---
 
 ## Support me on Ko-fi
 
-If this plugin improved your Discord profile and you want to support future plugins:
+If this plugin improved your Discord profile and you want to support future updates:
 
 [![Support me on Ko-fi](https://img.shields.io/badge/Support%20me%20on-Ko--fi-ff5f5f?style=for-the-badge&logo=kofi&logoColor=white)](https://ko-fi.com/rolololodev007)
 
 ---
 
+## Contributing
+
+PRs are welcome.
+
 ## License
 
 MIT
+
