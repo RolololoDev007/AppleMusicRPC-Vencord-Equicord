@@ -78,10 +78,7 @@ Plugin settings let you customize:
 
 Add your screenshots here:
 
-```md
-<img width="351" height="527" alt="image" src="https://github.com/user-attachments/assets/9afc045e-a254-4349-9265-b6cc3fe87c70" />
-
-```
+<img width="351" height="527" alt="Image" src="https://github.com/user-attachments/assets/e88581b0-479a-4cce-8dd2-c5b3af620ff2" />
 
 ## Troubleshooting
 
